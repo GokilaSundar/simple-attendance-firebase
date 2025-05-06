@@ -17,8 +17,62 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
     />
+
+    <style>
+      #preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: white; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .circular-progress {
+        width: 40px;
+        height: 40px;
+        animation: rotate 1.4s linear infinite;
+      }
+
+      .circular-progress circle {
+        stroke: #1976d2;
+        stroke-linecap: round;
+        animation: dash 1.4s ease-in-out infinite;
+      }
+
+      @keyframes rotate {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes dash {
+        0% {
+          stroke-dasharray: 1, 200;
+          stroke-dashoffset: 0;
+        }
+        50% {
+          stroke-dasharray: 100, 200;
+          stroke-dashoffset: -15px;
+        }
+        100% {
+          stroke-dasharray: 100, 200;
+          stroke-dashoffset: -125px;
+        }
+      }
+    </style>
   </head>
   <body>
+    <div id="preloader">
+      <svg class="circular-progress" viewBox="22 22 44 44">
+        <circle cx="44" cy="44" r="20" fill="none" stroke-width="4" />
+      </svg>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
