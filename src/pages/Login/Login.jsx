@@ -1,44 +1,66 @@
+import "./Login.css";
+
+import { Button, TextField, Typography } from "@mui/material";
+import { useFormik } from "formik";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
-import { auth } from "../../Firebase";
 import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+
 import { useAuth } from "../../components";
+import { auth } from "../../Firebase";
+
+const initialState = {
+  email: "",
+  password: "",
+};
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string().required("Required"),
+});
 
 export const Login = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
 
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const onSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-
-      setLoading(true);
+    async (values) => {
       setError(null);
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredentials) => {
-          console.log("User signed in:", userCredentials);
-
-          navigate("/");
-        })
-        .catch((err) => {
-          console.error("Error signing in:", err);
-
-          setError(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      try {
+        const userCredentials = await signInWithEmailAndPassword(
+          auth,
+          values.email,
+          values.password
+        );
+        console.log("User signed in:", userCredentials);
+        navigate("/");
+      } catch (err) {
+        console.error("Error signing in:", err);
+        setError(err.message);
+      }
     },
-    [email, password, navigate]
+    [navigate]
   );
+
+  const {
+    errors,
+    touched,
+    values,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    isSubmitting,
+    isValid,
+  } = useFormik({
+    initialValues: initialState,
+    validationSchema,
+    onSubmit,
+  });
 
   useEffect(() => {
     if (user) {
@@ -48,26 +70,44 @@ export const Login = () => {
 
   return (
     <div className="login-page">
-      <form onSubmit={onSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          disabled={loading}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+      <form onSubmit={handleSubmit}>
+        <Typography variant="h4" gutterBottom textAlign="center">
+          Login
+        </Typography>
+        <TextField
+          label="Email"
+          name="email"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values.email}
+          disabled={isSubmitting}
+          error={Boolean(errors.email && touched.email)}
+          helperText={errors.email || " "}
+          fullWidth
         />
-        <input
+        <TextField
+          label="Password"
+          name="password"
           type="password"
-          placeholder="Password"
-          disabled={loading}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values.password}
+          disabled={isSubmitting}
+          error={Boolean(errors.password && touched.password)}
+          helperText={errors.password || " "}
+          fullWidth
         />
-        <button type="submit" disabled={loading}>
-          {loading ? "Loading..." : "Login"}
-        </button>
+
+        <Button
+          type="submit"
+          disabled={
+            isSubmitting || !isValid || !values.email || !values.password
+          }
+          loading={isSubmitting}
+          variant="contained"
+        >
+          Login
+        </Button>
       </form>
       {error && <p className="error-message">{error}</p>}
     </div>
