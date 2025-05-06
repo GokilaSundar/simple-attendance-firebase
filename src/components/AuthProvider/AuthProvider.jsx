@@ -1,4 +1,5 @@
 import { child, get, ref, set } from "firebase/database";
+import sha256 from "js-sha256";
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
 
@@ -19,10 +20,17 @@ export const AuthProvider = ({ children }) => {
         if (snapshot.exists()) {
           setUser(snapshot.val());
         } else {
+          const hash = sha256.create();
+          hash.update(user.email);
+          const emailHash = hash.hex();
+
+          const photoURL = `https://www.gravatar.com/avatar/${emailHash}?d=identicon`;
+
           const userData = {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName || "New User",
+            photoURL,
             role: "user",
           };
 
