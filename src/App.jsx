@@ -1,5 +1,11 @@
 import "./App.css";
+import { AuthProvider } from "./components";
+import { Pages } from "./pages";
 
 export const App = () => {
-  return <>Hello World</>;
+  return (
+    <AuthProvider>
+      <Pages />
+    </AuthProvider>
+  );
 };
