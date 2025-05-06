@@ -1,4 +1,4 @@
-import Icon from "../../assets/icons/dashboard.png";
+import { Dashboard as DashboardIcon } from "@mui/icons-material";
 
 export const Dashboard = () => {
   return <>Dashboard</>;
@@ -6,6 +6,6 @@ export const Dashboard = () => {
 
 Dashboard.linkLabel = "Dashboard";
 Dashboard.linkPath = "/dashboard";
-Dashboard.linkIcon = Icon;
+Dashboard.linkIcon = DashboardIcon;
 Dashboard.isProtected = true; // This page is protected
 Dashboard.isDefault = true; // This page is the default page when user is logged in

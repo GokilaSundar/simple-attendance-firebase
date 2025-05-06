@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import { ProtectedRoutes } from "../components";
+import { ProtectedRoutes, WithNavigationSidebar } from "../components";
 import { AllAttendance } from "./AllAttendance/AllAttendance";
 import { Dashboard } from "./Dashboard/Dashboard";
 import { MyAttendance } from "./MyAttendance/MyAttendance";
@@ -30,9 +30,15 @@ export const Pages = () => {
       ))}
 
       <Route element={<ProtectedRoutes />}>
-        {protectedPages.map((Page) => (
-          <Route key={Page.linkPath} path={Page.linkPath} element={<Page />} />
-        ))}
+        <Route element={<WithNavigationSidebar pages={protectedPages} />}>
+          {protectedPages.map((Page) => (
+            <Route
+              key={Page.linkPath}
+              path={Page.linkPath}
+              element={<Page />}
+            />
+          ))}
+        </Route>
       </Route>
 
       <Route

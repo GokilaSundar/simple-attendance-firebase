@@ -1,4 +1,4 @@
-import Icon from "../../assets/icons/my-attendance.png";
+import { CalendarMonth } from "@mui/icons-material";
 
 export const MyAttendance = () => {
   return <>My Attendance</>;
@@ -6,5 +6,5 @@ export const MyAttendance = () => {
 
 MyAttendance.linkLabel = "My Attendance";
 MyAttendance.linkPath = "/my-attendance";
-MyAttendance.linkIcon = Icon;
+MyAttendance.linkIcon = CalendarMonth;
 MyAttendance.isProtected = true; // This page is protected

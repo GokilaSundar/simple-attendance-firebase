@@ -1,4 +1,4 @@
-import Icon from "../../assets/icons/all-attendance.png";
+import { DateRange } from "@mui/icons-material";
 
 export const AllAttendance = () => {
   return <>All Attendance</>;
@@ -6,6 +6,6 @@ export const AllAttendance = () => {
 
 AllAttendance.linkLabel = "All Attendance";
 AllAttendance.linkPath = "/all-attendance";
-AllAttendance.linkIcon = Icon;
+AllAttendance.linkIcon = DateRange;
 AllAttendance.role = "admin"; // Only admin can access this page
 AllAttendance.isProtected = true; // This page is protected
