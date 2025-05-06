@@ -1,0 +1,62 @@
+name: Update Firebase currentDate (IST)
+
+on:
+  schedule:
+    - cron: '30 18 * * *'  # Runs at 18:30 UTC = 00:00 IST daily
+
+jobs:
+  update-current-date:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Firebase Admin SDK
+        run: npm install firebase-admin
+
+      - name: Read project ID from .firebaserc
+        id: firebaserc
+        run: |
+          PROJECT_ID=$(jq -r '.projects.default' .firebaserc)
+          echo "PROJECT_ID=$PROJECT_ID" >> $GITHUB_ENV
+
+      - name: Update currentDate in Firebase
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          PROJECT_ID: ${{ env.PROJECT_ID }}
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT" > serviceAccount.json
+
+          node <<EOF
+          const admin = require("firebase-admin");
+          const serviceAccount = require("./serviceAccount.json");
+
+          const projectId = process.env.PROJECT_ID;
+
+          admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount),
+            databaseURL: \`https://\${projectId}.firebaseio.com\`
+          });
+
+          const db = admin.database();
+
+          // Get today's date in Asia/Kolkata timezone
+          const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+          console.log("Setting currentDate to:", today);
+
+          db.ref("config/currentDate").set(today)
+            .then(() => {
+              console.log("Successfully updated currentDate to:", today);
+              process.exit(0);
+            })
+            .catch((error) => {
+              console.error("Error updating date:", error);
+              process.exit(1);
+            });
+          EOF
