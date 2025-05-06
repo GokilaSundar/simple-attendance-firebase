@@ -1,7 +1,28 @@
 {
-  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
   "rules": {
-    ".read": false,
-    ".write": false
+    "config": {
+      "currentDate": {
+        ".read": "auth != null",
+        ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin'"
+      }
+    },
+    "attendance": {
+      "$date": {
+        "$uid": {
+          // Read permissions
+          ".read": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'admin')",
+          // Write permissions - Users can write their own data only for the current date - Admins can write any data
+          ".write": "auth != null && ((auth.uid === $uid && $date === root.child('config').child('currentDate').val()) || (root.child('users').child(auth.uid).child('role').val() === 'admin'))"
+        }
+      }
+    },
+    "users": {
+      "$uid": {
+        // Users can read their own data or admins can read any user
+        ".read": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'admin')",
+        // Users can write their own profile or admins can write any
+        ".write": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'admin')"
+      }
+    }
   }
 }
