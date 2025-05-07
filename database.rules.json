@@ -1,10 +1,8 @@
 {
   "rules": {
     "config": {
-      "currentDate": {
-        ".read": "auth != null",
-        ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin'"
-      }
+      ".read": "auth != null",
+      ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin'"
     },
     "attendance": {
       "$date": {
