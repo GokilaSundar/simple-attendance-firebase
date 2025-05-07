@@ -16,6 +16,12 @@
         }
       }
     },
+    "holidays": {
+      // All users can read holidays
+      ".read": "auth != null",
+      // Only admins can write holidays
+      ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin'"
+    },
     "users": {
       // Admin can read all users
       ".read": "root.child('users').child(auth.uid).child('role').val() === 'admin'",
