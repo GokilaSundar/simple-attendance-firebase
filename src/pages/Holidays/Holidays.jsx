@@ -16,13 +16,8 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import {
-  endAt,
-  get,
-  orderByKey,
-  query,
   ref,
   remove,
-  startAt,
   update
 } from "firebase/database";
 import PropTypes from "prop-types";
@@ -30,6 +25,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { LoadingOverlay, useAuth, useConfig } from "../../components";
 import { database } from "../../Firebase";
+import { fetchHolidays } from "../../Utils.js";
 import { HolidayEditor } from "./HolidayEditor.jsx";
 
 const HolidayRow = ({ item, isAdmin, onSubmit }) => {
@@ -162,7 +158,6 @@ AutoAddHolidays.propTypes = {
 };
 
 export const Holidays = () => {
-
   const { user } = useAuth();
   const config = useConfig();
   const theme = useTheme();
@@ -194,48 +189,21 @@ export const Holidays = () => {
     };
   }, [month]);
 
-  const fetchHolidays = useCallback(async () => {
+  const fetchHolidaysForMonth = useCallback(async () => {
     setLoading(true);
 
-    try {
-      const holidaysRef = ref(database, `/holidays`);
-
-      const attendanceQuery = query(
-        holidaysRef,
-        orderByKey(),
-        startAt(startDate),
-        endAt(endDate)
-      );
-
-      const snapshot = await get(attendanceQuery);
-
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-
-        const holidaysData = Object.entries(data).map(([key, value]) => ({
-          date: key,
-          reason: value,
-        }));
-
-        setHolidays(holidaysData);
-      } else {
-        setHolidays([]);
-      }
-    } catch (error) {
-      console.error("Error fetching holidays:", error);
-      setHolidays([]);
-    }
+    setHolidays(await fetchHolidays(startDate, endDate));
 
     setLoading(false);
   }, [startDate, endDate]);
 
   const onAddEditSubmit = useCallback(() => {
-    fetchHolidays();
-  }, [fetchHolidays]);
+    fetchHolidaysForMonth();
+  }, [fetchHolidaysForMonth]);
 
   useEffect(() => {
-    fetchHolidays();
-  }, [fetchHolidays]);
+    fetchHolidaysForMonth();
+  }, [fetchHolidaysForMonth]);
 
   return (
     <Box
