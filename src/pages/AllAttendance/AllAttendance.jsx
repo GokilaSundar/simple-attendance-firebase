@@ -24,8 +24,9 @@ import * as XLSX from "xlsx";
 
 import { LoadingOverlay, useConfig } from "../../components";
 import { database } from "../../Firebase";
+import { fetchHolidays } from "../../Utils";
 
-const AttendanceCell = ({ date, user, attendanceMap }) => {
+const AttendanceCell = ({ date, user, attendanceMap, holidaysMap }) => {
   const config = useConfig();
 
   const status = useMemo(() => {
@@ -102,6 +103,12 @@ const AttendanceCell = ({ date, user, attendanceMap }) => {
       }
     }
 
+    if (holidaysMap[date]) {
+      return {
+        value: "",
+      };
+    }
+
     return { value: "Absent", tooltip: "Absent", color: "error.main" };
   }, [config.currentDate, date, user, attendanceMap]);
 
@@ -143,9 +150,10 @@ AttendanceCell.propTypes = {
   date: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired,
   attendanceMap: PropTypes.object.isRequired,
+  holidaysMap: PropTypes.object.isRequired,
 };
 
-const AttendanceRow = ({ date, users, attendanceMap }) => {
+const AttendanceRow = ({ date, users, attendanceMap, holidaysMap }) => {
   const dateInstance = useMemo(() => dayjs(date), [date]);
 
   return (
@@ -158,6 +166,7 @@ const AttendanceRow = ({ date, users, attendanceMap }) => {
           date={date}
           user={user}
           attendanceMap={attendanceMap}
+          holidaysMap={holidaysMap}
         />
       ))}
     </TableRow>
@@ -168,6 +177,7 @@ AttendanceRow.propTypes = {
   date: PropTypes.string.isRequired,
   users: PropTypes.array.isRequired,
   attendanceMap: PropTypes.object.isRequired,
+  holidaysMap: PropTypes.object.isRequired,
 };
 
 export const AllAttendance = () => {
@@ -184,6 +194,8 @@ export const AllAttendance = () => {
   const [users, setUsers] = useState([]);
   const [loadingAttendance, setLoadingAttendance] = useState(true);
   const [attendanceMap, setAttendanceMap] = useState({});
+  const [loadingHolidays, setLoadingHolidays] = useState(true);
+  const [holidaysMap, setHolidaysMap] = useState({});
 
   const { minDate, maxDate } = useMemo(
     () => ({
@@ -328,6 +340,24 @@ export const AllAttendance = () => {
     fetchAttendance();
   }, [startDate, endDate, users]);
 
+  useEffect(() => {
+    setLoadingHolidays(true);
+    fetchHolidays(
+      startDate,
+      dayjs(startDate).endOf("month").format("YYYY-MM-DD")
+    )
+      .then((holidays) => {
+        setHolidaysMap(
+          Object.fromEntries(
+            holidays.map((holiday) => [holiday.date, holiday.reason])
+          )
+        );
+      })
+      .finally(() => {
+        setLoadingHolidays(false);
+      });
+  }, [startDate]);
+
   return (
     <Box
       sx={{
@@ -362,6 +392,55 @@ export const AllAttendance = () => {
             },
           }}
         />
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginLeft: 2,
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            Total Days
+          </Typography>
+          <Typography variant="body1" color="text.primary">
+            {month.daysInMonth()}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginLeft: 2,
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            Total Holidays
+          </Typography>
+          <Typography variant="body1" color="text.primary">
+            {Object.keys(holidaysMap).length}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginLeft: 2,
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            Total Working Days
+          </Typography>
+          <Typography variant="body1" color="text.primary">
+            {month.daysInMonth() - Object.keys(holidaysMap).length}
+          </Typography>
+        </Box>
         <Box sx={{ flexGrow: 1 }} />
         <Button
           variant="contained"
@@ -437,6 +516,7 @@ export const AllAttendance = () => {
                 date={date}
                 users={users}
                 attendanceMap={attendanceMap}
+                holidaysMap={holidaysMap}
               />
             ))}
           </TableBody>
@@ -458,10 +538,14 @@ export const AllAttendance = () => {
             </TableRow>
           </TableFooter>
         </Table>
-        {(loadingAttendance || loadingUsers) && (
+        {(loadingAttendance || loadingUsers || loadingHolidays) && (
           <LoadingOverlay
             loadingText={
-              loadingUsers ? "Loading Users..." : "Loading Attendance..."
+              loadingUsers
+                ? "Loading Users..."
+                : loadingHolidays
+                ? "Loading Holidays..."
+                : "Loading Attendance..."
             }
           />
         )}
