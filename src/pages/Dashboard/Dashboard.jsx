@@ -12,12 +12,13 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import dayjs from "dayjs";
+import { onValue, ref, set } from "firebase/database";
 import humanizeDuration from "humanize-duration";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { LoadingOverlay, useAuth, useConfig } from "../../components/index.js";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { onValue, ref, set } from "firebase/database";
 import { database } from "../../Firebase.js";
+import { fetchHoliday } from "../../Utils.js";
 
 const ClockInOutButton = styled(Button)(() => ({
   display: "flex",
@@ -42,8 +43,13 @@ export const Dashboard = () => {
 
   const clockDataRef = useMemo(
     () =>
-      ref(database, `/attendance/${dayjs().format("YYYY-MM-DD")}/${user.uid}`),
-    [user]
+      ref(
+        database,
+        `/attendance/${dayjs(config.currentDate).format("YYYY-MM-DD")}/${
+          user.uid
+        }`
+      ),
+    [config.currentDate, user]
   );
 
   const [clockData, setClockData] = useState({
@@ -53,6 +59,8 @@ export const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [clockingIn, setClockingIn] = useState(false);
   const [clockingOut, setClockingOut] = useState(false);
+
+  const [holiday, setHoliday] = useState(null);
 
   const statusText = useMemo(() => {
     if (clockData.clockIn && !clockData.clockOut) {
@@ -137,6 +145,10 @@ export const Dashboard = () => {
     });
   }, [clockDataRef]);
 
+  useEffect(() => {
+    fetchHoliday(config.currentDate).then(setHoliday);
+  }, [config.currentDate]);
+
   return (
     <Box
       sx={{
@@ -162,6 +174,11 @@ export const Dashboard = () => {
       <Typography variant="h6" sx={{ mt: 2 }}>
         Today is {dayjs(config.currentDate).format("dddd, MMMM D, YYYY")}
       </Typography>
+      {holiday && (
+        <Typography variant="h6" color="error">
+          Holiday - {holiday}
+        </Typography>
+      )}
       <Box
         sx={{
           display: "flex",
