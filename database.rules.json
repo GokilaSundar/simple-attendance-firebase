@@ -5,6 +5,8 @@
       ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin'"
     },
     "attendance": {
+      // Admin can read all attendance records
+      ".read": "root.child('users').child(auth.uid).child('role').val() === 'admin'",
       "$date": {
         "$uid": {
           // Read permissions
