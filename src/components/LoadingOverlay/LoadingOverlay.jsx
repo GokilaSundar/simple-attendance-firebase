@@ -1,6 +1,10 @@
+import { useTheme } from "@emotion/react";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import PropTypes from "prop-types";
 
-export const LoadingOverlay = () => {
+export const LoadingOverlay = ({ loadingText }) => {
+  const theme = useTheme();
+
   return (
     <Box
       sx={{
@@ -9,7 +13,7 @@ export const LoadingOverlay = () => {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        background: theme.palette.background.default,
         zIndex: 9999,
       }}
     >
@@ -24,9 +28,13 @@ export const LoadingOverlay = () => {
       >
         <CircularProgress />
         <Typography variant="h6" sx={{ mt: 2 }}>
-          Loading, please wait...
+          {loadingText || "Loading, please wait..."}
         </Typography>
       </Box>
     </Box>
   );
+};
+
+LoadingOverlay.propTypes = {
+  loadingText: PropTypes.string,
 };
