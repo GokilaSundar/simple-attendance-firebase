@@ -110,7 +110,7 @@ const AttendanceCell = ({ date, user, attendanceMap, holidaysMap }) => {
     }
 
     return { value: "Absent", tooltip: "Absent", color: "error.main" };
-  }, [config.currentDate, date, user, attendanceMap]);
+  }, [config.currentDate, date, user, attendanceMap, holidaysMap]);
 
   return (
     <TableCell key={user.uid} align="left">
