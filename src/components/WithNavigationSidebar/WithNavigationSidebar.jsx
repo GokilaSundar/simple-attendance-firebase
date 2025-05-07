@@ -51,7 +51,7 @@ export const WithNavigationSidebar = ({ pages }) => {
   }, [isClosing]);
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", flexGrow: 1 }}>
       <AppBar
         position="fixed"
         style={{
@@ -162,6 +162,8 @@ export const WithNavigationSidebar = ({ pages }) => {
         component="main"
         sx={{
           flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
