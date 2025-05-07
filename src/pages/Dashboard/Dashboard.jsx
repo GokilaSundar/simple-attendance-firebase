@@ -14,7 +14,7 @@ import {
 import dayjs from "dayjs";
 import humanizeDuration from "humanize-duration";
 
-import { LoadingOverlay, useAuth } from "../../components/index.js";
+import { LoadingOverlay, useAuth, useConfig } from "../../components/index.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { onValue, ref, set } from "firebase/database";
 import { database } from "../../Firebase.js";
@@ -35,6 +35,7 @@ const ClockInOutButton = styled(Button)(() => ({
 
 export const Dashboard = () => {
   const { user } = useAuth();
+  const config = useConfig();
 
   const isMobile = useMediaQuery("(max-width:600px)");
   const avatarSize = useMemo(() => (isMobile ? 64 : 128), [isMobile]);
@@ -159,7 +160,7 @@ export const Dashboard = () => {
         Welcome back, {user?.displayName || user?.email}!
       </Typography>
       <Typography variant="h6" sx={{ mt: 2 }}>
-        Today is {dayjs().format("dddd, MMMM D, YYYY")}
+        Today is {dayjs(config.currentDate).format("dddd, MMMM D, YYYY")}
       </Typography>
       <Box
         sx={{
