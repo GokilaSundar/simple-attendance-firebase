@@ -358,6 +358,56 @@ export const AllAttendance = () => {
       });
   }, [startDate]);
 
+  const dateSummary = (
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          Total Days
+        </Typography>
+        <Typography variant="body1" color="text.primary">
+          {month.daysInMonth()}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          Total Holidays
+        </Typography>
+        <Typography variant="body1" color="text.primary">
+          {Object.keys(holidaysMap).length}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          Total Working Days
+        </Typography>
+        <Typography variant="body1" color="text.primary">
+          {month.daysInMonth() - Object.keys(holidaysMap).length}
+        </Typography>
+      </Box>
+    </>
+  );
+
   return (
     <Box
       sx={{
@@ -373,6 +423,7 @@ export const AllAttendance = () => {
       <Box
         sx={{
           display: "flex",
+          gap: 2,
         }}
       >
         <DatePicker
@@ -392,55 +443,7 @@ export const AllAttendance = () => {
             },
           }}
         />
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            marginLeft: 2,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            Total Days
-          </Typography>
-          <Typography variant="body1" color="text.primary">
-            {month.daysInMonth()}
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            marginLeft: 2,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            Total Holidays
-          </Typography>
-          <Typography variant="body1" color="text.primary">
-            {Object.keys(holidaysMap).length}
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            marginLeft: 2,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            Total Working Days
-          </Typography>
-          <Typography variant="body1" color="text.primary">
-            {month.daysInMonth() - Object.keys(holidaysMap).length}
-          </Typography>
-        </Box>
+        {!isMobile && dateSummary}
         <Box sx={{ flexGrow: 1 }} />
         <Button
           variant="contained"
@@ -463,6 +466,16 @@ export const AllAttendance = () => {
           {isMobile ? "" : "Download"}
         </Button>
       </Box>
+      {isMobile && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          {dateSummary}
+        </Box>
+      )}
       <Divider />
       <Box
         sx={{

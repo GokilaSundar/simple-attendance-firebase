@@ -263,6 +263,56 @@ export const MyAttendance = () => {
     });
   }, [startDate, endDate]);
 
+  const dateSummary = (
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          Total Days
+        </Typography>
+        <Typography variant="body1" color="text.primary">
+          {month.daysInMonth()}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          Total Working Days
+        </Typography>
+        <Typography variant="body1" color="text.primary">
+          {totalWorkingDays}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          Total Present
+        </Typography>
+        <Typography variant="body1" color="text.primary">
+          {totalPresent}
+        </Typography>
+      </Box>
+    </>
+  );
+
   return (
     <Box
       sx={{
@@ -276,6 +326,7 @@ export const MyAttendance = () => {
       <Box
         sx={{
           display: "flex",
+          gap: 2,
         }}
       >
         <DatePicker
@@ -296,22 +347,7 @@ export const MyAttendance = () => {
             },
           }}
         />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            marginLeft: 2,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            Total Present
-          </Typography>
-          <Typography variant="body1" color="text.primary">
-            {totalPresent} / {totalWorkingDays}
-          </Typography>
-        </Box>
+        {!isMobile && dateSummary}
         <Box sx={{ flexGrow: 1 }} />
         <Button
           variant="contained"
@@ -334,6 +370,16 @@ export const MyAttendance = () => {
           {isMobile ? "" : "Download"}
         </Button>
       </Box>
+      {isMobile && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          {dateSummary}
+        </Box>
+      )}
       <Divider />
       <Box
         sx={{

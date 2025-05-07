@@ -15,11 +15,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import {
-  ref,
-  remove,
-  update
-} from "firebase/database";
+import { ref, remove, update } from "firebase/database";
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -158,6 +154,8 @@ AutoAddHolidays.propTypes = {
 };
 
 export const Holidays = () => {
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
+
   const { user } = useAuth();
   const config = useConfig();
   const theme = useTheme();
@@ -205,6 +203,56 @@ export const Holidays = () => {
     fetchHolidaysForMonth();
   }, [fetchHolidaysForMonth]);
 
+  const dateSummary = (
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          Total Days
+        </Typography>
+        <Typography variant="body1" color="text.primary">
+          {month.daysInMonth()}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          Total Holidays
+        </Typography>
+        <Typography variant="body1" color="text.primary">
+          {holidays.length}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          Total Working Days
+        </Typography>
+        <Typography variant="body1" color="text.primary">
+          {month.daysInMonth() - holidays.length}
+        </Typography>
+      </Box>
+    </>
+  );
+
   return (
     <Box
       sx={{
@@ -218,7 +266,7 @@ export const Holidays = () => {
       <Box
         sx={{
           display: "flex",
-          gap: 1,
+          gap: 2,
         }}
       >
         <DatePicker
@@ -238,22 +286,7 @@ export const Holidays = () => {
             },
           }}
         />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            marginLeft: 2,
-          }}
-        >
-          <Typography variant="body2" color="text.secondary">
-            Total Holidays
-          </Typography>
-          <Typography variant="body1" color="text.primary">
-            {holidays.length}
-          </Typography>
-        </Box>
+        {!isMobile && dateSummary}
         <Box sx={{ flexGrow: 1 }} />
         {isAdmin && (
           <>
@@ -266,6 +299,16 @@ export const Holidays = () => {
           </>
         )}
       </Box>
+      {isMobile && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          {dateSummary}
+        </Box>
+      )}
       <Divider />
       <Box
         sx={{
