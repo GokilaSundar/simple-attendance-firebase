@@ -158,6 +158,7 @@ AttendanceRow.propTypes = {
 export const MyAttendance = () => {
   const isMobile = useMediaQuery("(max-width: 600px)");
 
+  const { user } = useAuth();
   const config = useConfig();
   const theme = useTheme();
 
@@ -218,7 +219,9 @@ export const MyAttendance = () => {
       type: "application/octet-stream",
     });
 
-    const fileName = `Attendance_${month.format("MMMM_YYYY")}.xlsx`;
+    const fileName = `Attendance_${month.format("MMMM_YYYY")}_${
+      user.displayName || user.uid
+    }.xlsx`;
 
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -229,7 +232,7 @@ export const MyAttendance = () => {
 
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
-  }, [month]);
+  }, [user, month]);
 
   return (
     <Box
