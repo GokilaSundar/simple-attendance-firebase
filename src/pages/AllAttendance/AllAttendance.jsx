@@ -158,7 +158,7 @@ const AttendanceRow = ({ date, users, attendanceMap, holidaysMap }) => {
 
   return (
     <TableRow key={date}>
-      <TableCell>{dateInstance.format("DD/MM/YYYY")}</TableCell>
+      <TableCell>{dateInstance.format("DD/MM/YYYY (dddd)")}</TableCell>
 
       {users.map((user) => (
         <AttendanceCell

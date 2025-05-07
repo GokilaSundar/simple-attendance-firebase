@@ -129,7 +129,7 @@ const AttendanceRow = ({ date, holidaysMap, setOverallData }) => {
         background: rowBackground,
       }}
     >
-      <TableCell>{dateInstance.format("DD/MM/YYYY")}</TableCell>
+      <TableCell>{dateInstance.format("DD/MM/YYYY (dddd)")}</TableCell>
       {loading ? (
         <TableCell colSpan={4} align="center">
           <Box
