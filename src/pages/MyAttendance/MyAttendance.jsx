@@ -251,7 +251,10 @@ export const MyAttendance = () => {
   }, [user, month]);
 
   useEffect(() => {
-    fetchHolidays(startDate, endDate).then((holidays) => {
+    fetchHolidays(
+      startDate,
+      dayjs(startDate).endOf("month").format("YYYY-MM-DD")
+    ).then((holidays) => {
       setHolidaysMap(
         Object.fromEntries(
           holidays.map((holiday) => [holiday.date, holiday.reason])
