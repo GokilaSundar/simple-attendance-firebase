@@ -23,8 +23,9 @@ import * as XLSX from "xlsx";
 
 import { useAuth, useConfig } from "../../components";
 import { database } from "../../Firebase";
+import { fetchHolidays } from "../../Utils";
 
-const AttendanceRow = ({ date, setOverallData }) => {
+const AttendanceRow = ({ date, holidaysMap, setOverallData }) => {
   const { user } = useAuth();
 
   const dateInstance = useMemo(() => dayjs(date), [date]);
@@ -36,6 +37,8 @@ const AttendanceRow = ({ date, setOverallData }) => {
     () => ref(database, `/attendance/${date}/${user.uid}`),
     [user, date]
   );
+
+  const holiday = useMemo(() => holidaysMap[date], [holidaysMap, date]);
 
   const status = useMemo(() => {
     if (clockData) {
@@ -53,13 +56,15 @@ const AttendanceRow = ({ date, setOverallData }) => {
     if (!loading) {
       if (clockData) {
         return clockData.clockOut ? "#ccffc7" : "#fff3cd";
+      } else if (holidaysMap[date]) {
+        return "inherit";
       } else {
         return "#ffcfcf";
       }
     }
 
     return "inherit";
-  }, [loading, clockData]);
+  }, [loading, clockData, holidaysMap, date]);
 
   useEffect(() => {
     setLoading(true);
@@ -138,6 +143,10 @@ const AttendanceRow = ({ date, setOverallData }) => {
             <CircularProgress size={24} />
           </Box>
         </TableCell>
+      ) : holiday && !clockData ? (
+        <TableCell colSpan={4}>
+          <Typography textAlign="center">Holiday - {holiday}</Typography>
+        </TableCell>
       ) : (
         <>
           <TableCell align="left">{status}</TableCell>
@@ -152,6 +161,7 @@ const AttendanceRow = ({ date, setOverallData }) => {
 
 AttendanceRow.propTypes = {
   date: PropTypes.string.isRequired,
+  holidaysMap: PropTypes.object.isRequired,
   setOverallData: PropTypes.func.isRequired,
 };
 
@@ -174,9 +184,10 @@ export const MyAttendance = () => {
     [config]
   );
 
+  const [holidaysMap, setHolidaysMap] = useState({});
   const [overallData, setOverallData] = useState({});
 
-  const dates = useMemo(() => {
+  const { startDate, endDate, dates } = useMemo(() => {
     const startOfMonth = month.clone().startOf("month");
     let endOfMonth = month.clone().endOf("month");
 
@@ -190,7 +201,11 @@ export const MyAttendance = () => {
       dates.push(startOfMonth.clone().date(i).format("YYYY-MM-DD"));
     }
 
-    return dates;
+    return {
+      startDate: startOfMonth.format("YYYY-MM-DD"),
+      endDate: endOfMonth.format("YYYY-MM-DD"),
+      dates,
+    };
   }, [month]);
 
   const { totalPresent, totalWorkingDays } = useMemo(() => {
@@ -199,10 +214,11 @@ export const MyAttendance = () => {
       0
     );
 
-    const totalWorkingDays = dates.length;
+    const totalWorkingDays =
+      dayjs(startDate).daysInMonth() - Object.keys(holidaysMap).length;
 
     return { totalPresent, totalWorkingDays };
-  }, [overallData, dates]);
+  }, [startDate, overallData, holidaysMap]);
 
   const onDownload = useCallback(() => {
     const tableElement = tableRef.current;
@@ -233,6 +249,16 @@ export const MyAttendance = () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
   }, [user, month]);
+
+  useEffect(() => {
+    fetchHolidays(startDate, endDate).then((holidays) => {
+      setHolidaysMap(
+        Object.fromEntries(
+          holidays.map((holiday) => [holiday.date, holiday.reason])
+        )
+      );
+    });
+  }, [startDate, endDate]);
 
   return (
     <Box
@@ -333,6 +359,7 @@ export const MyAttendance = () => {
               <AttendanceRow
                 key={date}
                 date={date}
+                holidaysMap={holidaysMap}
                 setOverallData={setOverallData}
               />
             ))}
