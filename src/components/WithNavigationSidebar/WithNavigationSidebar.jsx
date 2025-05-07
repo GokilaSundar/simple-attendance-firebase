@@ -121,6 +121,10 @@ export const WithNavigationSidebar = ({ pages }) => {
                   if (page.linkPath) {
                     navigate(page.linkPath);
                   }
+
+                  if (isMobile) {
+                    onDrawerClose();
+                  }
                 }}
                 disablePadding
               >
