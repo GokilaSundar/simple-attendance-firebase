@@ -1,6 +1,8 @@
-import { useLayoutEffect } from "react";
 import "./App.css";
-import { AuthProvider } from "./components";
+
+import { useLayoutEffect } from "react";
+
+import { AuthProvider, ConfigProvider } from "./components";
 import { Pages } from "./pages";
 
 export const App = () => {
@@ -14,7 +16,9 @@ export const App = () => {
 
   return (
     <AuthProvider>
-      <Pages />
+      <ConfigProvider>
+        <Pages />
+      </ConfigProvider>
     </AuthProvider>
   );
 };
