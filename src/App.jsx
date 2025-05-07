@@ -1,9 +1,12 @@
 import "./App.css";
 
+import { createTheme, ThemeProvider } from "@mui/material";
 import { useLayoutEffect } from "react";
 
 import { AuthProvider, ConfigProvider } from "./components";
 import { Pages } from "./pages";
+
+const theme = createTheme();
 
 export const App = () => {
   useLayoutEffect(() => {
@@ -17,7 +20,9 @@ export const App = () => {
   return (
     <AuthProvider>
       <ConfigProvider>
-        <Pages />
+        <ThemeProvider theme={theme}>
+          <Pages />
+        </ThemeProvider>
       </ConfigProvider>
     </AuthProvider>
   );
