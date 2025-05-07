@@ -42,12 +42,12 @@ const AttendanceCell = ({ date, user, attendanceMap, holidaysMap }) => {
                 <tr>
                   <td>Clocked In</td>
                   <td>:</td>
-                  <td>{dayjs(attendance.clockIn).format("hh:mm A")}</td>
+                  <td>{dayjs(attendance.clockIn).format("h:mm A")}</td>
                 </tr>
                 <tr>
                   <td>Clocked Out</td>
                   <td>:</td>
-                  <td>{dayjs(attendance.clockOut).format("hh:mm A")}</td>
+                  <td>{dayjs(attendance.clockOut).format("h:mm A")}</td>
                 </tr>
                 <tr>
                   <td>Total Hours</td>
@@ -76,7 +76,7 @@ const AttendanceCell = ({ date, user, attendanceMap, holidaysMap }) => {
                   <tr>
                     <td>Clocked In</td>
                     <td>:</td>
-                    <td>{dayjs(attendance.clockIn).format("hh:mm A")}</td>
+                    <td>{dayjs(attendance.clockIn).format("h:mm A")}</td>
                   </tr>
                 </tbody>
               </table>
@@ -92,7 +92,7 @@ const AttendanceCell = ({ date, user, attendanceMap, holidaysMap }) => {
                   <tr>
                     <td>Clocked In</td>
                     <td>:</td>
-                    <td>{dayjs(attendance.clockIn).format("hh:mm A")}</td>
+                    <td>{dayjs(attendance.clockIn).format("h:mm A")}</td>
                   </tr>
                 </tbody>
               </table>

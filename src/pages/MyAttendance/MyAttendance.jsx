@@ -78,10 +78,10 @@ const AttendanceRow = ({ date, holidaysMap, setOverallData }) => {
           if (data.clockIn || data.clockOut) {
             const clockData = {
               clockIn: data.clockIn
-                ? dayjs(data.clockIn).format("HH:mm A")
+                ? dayjs(data.clockIn).format("h:mm A")
                 : "",
               clockOut: data.clockOut
-                ? dayjs(data.clockOut).format("HH:mm A")
+                ? dayjs(data.clockOut).format("h:mm A")
                 : "",
               duration:
                 data.clockIn && data.clockOut
