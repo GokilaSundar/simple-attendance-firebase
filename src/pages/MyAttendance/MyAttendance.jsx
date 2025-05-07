@@ -18,7 +18,8 @@ import dayjs from "dayjs";
 import { get, ref } from "firebase/database";
 import humanizeDuration from "humanize-duration";
 import PropTypes from "prop-types";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import * as XLSX from "xlsx";
 
 import { useAuth, useConfig } from "../../components";
 import { database } from "../../Firebase";
@@ -160,6 +161,8 @@ export const MyAttendance = () => {
   const config = useConfig();
   const theme = useTheme();
 
+  const tableRef = useRef(null);
+
   const [month, setMonth] = useState(() => dayjs().startOf("month"));
 
   const { minDate, maxDate } = useMemo(
@@ -199,6 +202,34 @@ export const MyAttendance = () => {
 
     return { totalPresent, totalWorkingDays };
   }, [overallData, dates]);
+
+  const onDownload = useCallback(() => {
+    const tableElement = tableRef.current;
+
+    if (!tableElement) return;
+
+    const workbook = XLSX.utils.table_to_book(tableElement);
+
+    const buffer = XLSX.write(workbook, {
+      type: "buffer",
+    });
+
+    const blob = new Blob([buffer], {
+      type: "application/octet-stream",
+    });
+
+    const fileName = `Attendance_${month.format("MMMM_YYYY")}.xlsx`;
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  }, [month]);
 
   return (
     <Box
@@ -266,6 +297,7 @@ export const MyAttendance = () => {
                 }
               : {}
           }
+          onClick={onDownload}
         >
           {isMobile ? "" : "Download"}
         </Button>
@@ -282,7 +314,7 @@ export const MyAttendance = () => {
           border: `1px solid ${theme.palette.divider}`,
         }}
       >
-        <Table stickyHeader>
+        <Table ref={tableRef} stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell>Date</TableCell>
