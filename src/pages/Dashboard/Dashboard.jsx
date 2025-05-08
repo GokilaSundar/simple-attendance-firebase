@@ -177,162 +177,167 @@ export const Dashboard = () => {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        flexGrow: 1,
-        gap: 2,
+        flex: "1 1 1px",
+        overflow: "hidden",
         position: "relative",
       }}
     >
-      <Avatar
-        sx={{
-          width: avatarSize,
-          height: avatarSize,
-        }}
-        src={user?.photoURL}
-      />
-      <Typography variant="h4" textAlign="center" sx={{ ml: 2 }}>
-        Welcome back, {user?.displayName || user?.email}!
-      </Typography>
-      <Typography variant="h6" sx={{ mt: 2 }}>
-        Today is {dayjs(config.currentDate).format("dddd, MMMM D, YYYY")}
-      </Typography>
-      {holiday && (
-        <Typography variant="h6" color="error">
-          Holiday - {holiday}
-        </Typography>
-      )}
       <Box
         sx={{
           display: "flex",
-          justifyContent: "center",
+          flexDirection: "column",
           alignItems: "center",
-          gap: 5,
+          gap: 2,
+          overflow: "auto",
+          height: "100%",
         }}
       >
-        <ClockInOutButton
-          variant="contained"
-          color="primary"
-          size="large"
-          disabled={!!clockData.clockIn || clockingIn}
-          onClick={onClockIn}
-        >
-          <Alarm />
-
-          <Typography variant="subtitle1">
-            {clockData.clockIn
-              ? dayjs(clockData.clockIn).format("h:mm A")
-              : "N/A"}
-          </Typography>
-
-          <Typography variant="h6">Clock In</Typography>
-        </ClockInOutButton>
-        <ClockInOutButton
-          variant="contained"
-          color="secondary"
-          size="large"
-          disabled={!clockData.clockIn || !!clockData.clockOut || clockingOut}
-          onClick={onClockOut}
-        >
-          <AlarmOff />
-
-          <Typography variant="subtitle1">
-            {clockData.clockOut
-              ? dayjs(clockData.clockOut).format("h:mm A")
-              : "N/A"}
-          </Typography>
-
-          <Typography variant="h6">Clock Out</Typography>
-        </ClockInOutButton>
-      </Box>
-      {statusText && (
-        <Typography variant="h6" sx={{ mt: 2 }}>
-          {statusText}
+        <Avatar
+          sx={{
+            width: avatarSize,
+            height: avatarSize,
+          }}
+          src={user?.photoURL}
+        />
+        <Typography variant="h4" textAlign="center" sx={{ ml: 2 }}>
+          Welcome back, {user?.displayName || user?.email}!
         </Typography>
-      )}
-
-      {todayTasks.length > 0 && (
+        <Typography variant="h6" sx={{ mt: 2 }}>
+          Today is {dayjs(config.currentDate).format("dddd, MMMM D, YYYY")}
+        </Typography>
+        {holiday && (
+          <Typography variant="h6" color="error">
+            Holiday - {holiday}
+          </Typography>
+        )}
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            width: "100%",
-            maxWidth: 400,
-            mt: 5,
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 5,
           }}
         >
-          <Typography variant="h5" textAlign="center">
-            Today&apos;s Tasks
-          </Typography>
+          <ClockInOutButton
+            variant="contained"
+            color="primary"
+            size="large"
+            disabled={!!clockData.clockIn || clockingIn}
+            onClick={onClockIn}
+          >
+            <Alarm />
 
+            <Typography variant="subtitle1">
+              {clockData.clockIn
+                ? dayjs(clockData.clockIn).format("h:mm A")
+                : "N/A"}
+            </Typography>
+
+            <Typography variant="h6">Clock In</Typography>
+          </ClockInOutButton>
+          <ClockInOutButton
+            variant="contained"
+            color="secondary"
+            size="large"
+            disabled={!clockData.clockIn || !!clockData.clockOut || clockingOut}
+            onClick={onClockOut}
+          >
+            <AlarmOff />
+
+            <Typography variant="subtitle1">
+              {clockData.clockOut
+                ? dayjs(clockData.clockOut).format("h:mm A")
+                : "N/A"}
+            </Typography>
+
+            <Typography variant="h6">Clock Out</Typography>
+          </ClockInOutButton>
+        </Box>
+        {statusText && (
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            {statusText}
+          </Typography>
+        )}
+
+        {todayTasks.length > 0 && (
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
               gap: 2,
-              maxHeight: 400,
-              overflowY: "auto",
+              width: "100%",
+              maxWidth: 400,
+              mt: 5,
             }}
           >
-            {todayTasks.map((task) => (
-              <Box
-                key={task.id}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
-                  padding: 2,
-                  border: "1px solid #ccc",
-                }}
-              >
-                <Box sx={{ flex: "1 1 1px", overflow: "hidden" }}>
-                  <Typography
-                    variant="body1"
-                    sx={{
-                      maxWidth: "100%",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {task.description}
-                  </Typography>
-                </Box>
+            <Typography variant="h5" textAlign="center">
+              Today&apos;s Tasks
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+              }}
+            >
+              {todayTasks.map((task) => (
                 <Box
+                  key={task.id}
                   sx={{
                     display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 2,
+                    padding: 2,
+                    border: "1px solid #ccc",
                   }}
                 >
-                  <Typography variant="body2" color="text.secondary">
-                    Status: {task.status}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Hours: {task.hours} hours
-                  </Typography>
+                  <Box sx={{ flex: "1 1 1px", overflow: "hidden" }}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        maxWidth: "100%",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {task.description}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography variant="body2" color="text.secondary">
+                      Status: {task.status}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Hours: {task.hours} hours
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
-            ))}
-          </Box>
+              ))}
+            </Box>
 
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              alignSelf: "center",
-            }}
-            onClick={() => {
-              navigate("/my-tasks");
-            }}
-          >
-            Manage Tasks
-          </Button>
-        </Box>
-      )}
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                alignSelf: "center",
+              }}
+              onClick={() => {
+                navigate("/my-tasks");
+              }}
+            >
+              Manage Tasks
+            </Button>
+          </Box>
+        )}
+      </Box>
 
       {loading && <LoadingOverlay />}
     </Box>
