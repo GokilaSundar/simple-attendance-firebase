@@ -8,8 +8,16 @@ import { Login } from "./Login/Login";
 import { useMemo } from "react";
 import { Unauthorized } from "./Unauthorized/Unauthorized";
 import { Holidays } from "./Holidays/Holidays";
+import { MyTasks } from "./MyTasks/MyTasks";
 
-const pages = [Login, Dashboard, MyAttendance, AllAttendance, Holidays];
+const pages = [
+  Login,
+  Dashboard,
+  MyAttendance,
+  MyTasks,
+  AllAttendance,
+  Holidays,
+];
 
 const { unprotectedPages, protectedUserPages, protectedAdminPages } =
   pages.reduce(
