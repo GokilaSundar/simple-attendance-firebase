@@ -3,6 +3,7 @@ name: Update Firebase currentDate (IST)
 on:
   schedule:
     - cron: '30 18 * * *'  # Runs at 18:30 UTC = 00:00 IST daily
+  workflow_dispatch:
 
 jobs:
   update-current-date:
