@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { CalendarMonth, Download } from "@mui/icons-material";
+import { DateRange, Download } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -421,5 +421,5 @@ export const MyAttendance = () => {
 
 MyAttendance.linkLabel = "My Attendance";
 MyAttendance.linkPath = "/my-attendance";
-MyAttendance.linkIcon = CalendarMonth;
+MyAttendance.linkIcon = DateRange;
 MyAttendance.isProtected = true; // This page is protected

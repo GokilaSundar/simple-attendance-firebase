@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react";
-import { DateRange, Download, InfoOutline } from "@mui/icons-material";
+import { CalendarMonth, Download, InfoOutline } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -569,6 +569,6 @@ export const AllAttendance = () => {
 
 AllAttendance.linkLabel = "All Attendance";
 AllAttendance.linkPath = "/all-attendance";
-AllAttendance.linkIcon = DateRange;
+AllAttendance.linkIcon = CalendarMonth;
 AllAttendance.role = "admin"; // Only admin can access this page
 AllAttendance.isProtected = true; // This page is protected
