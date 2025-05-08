@@ -217,6 +217,7 @@ export const MyTasks = () => {
         <DatePicker
           label="Date"
           views={["day", "month", "year"]}
+          format="DD/MM/YYYY"
           minDate={minDate}
           maxDate={maxDate}
           value={date}
