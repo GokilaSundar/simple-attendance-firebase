@@ -4,6 +4,16 @@
       ".read": "auth != null",
       ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin'"
     },
+    "tasks": {
+      // Admin can read all tasks
+      ".read": "root.child('users').child(auth.uid).child('role').val() === 'admin'",
+      "$uid": {
+        // Users can read their own tasks or admins can read any user
+        ".read": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'admin')",
+        // Users can write their own tasks or admins can write any user
+        ".write": "auth != null && (auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'admin')"
+      }
+    },
     "attendance": {
       // Admin can read all attendance records
       ".read": "root.child('users').child(auth.uid).child('role').val() === 'admin'",
