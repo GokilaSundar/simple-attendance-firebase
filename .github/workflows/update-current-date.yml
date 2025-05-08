@@ -30,6 +30,7 @@ jobs:
       - name: Update currentDate in Firebase
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SIMPLE_ATTENDANCE_GV }}
+          FIREBASE_DATABASE_URL: ${{ secrets.VITE_FIREBASE_DATABASE_URL }}
           PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
         run: |
           echo "$FIREBASE_SERVICE_ACCOUNT" > serviceAccount.json
@@ -42,7 +43,7 @@ jobs:
 
           admin.initializeApp({
             credential: admin.credential.cert(serviceAccount),
-            databaseURL: \`https://\${projectId}.firebaseio.com\`
+            databaseURL: process.env.FIREBASE_DATABASE_URL,
           });
 
           const db = admin.database();
