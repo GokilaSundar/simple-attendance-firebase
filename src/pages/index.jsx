@@ -45,9 +45,10 @@ export const Pages = () => {
 
   const navigationPages = useMemo(
     () =>
-      user?.role === "admin"
+      (user?.role === "admin"
         ? [...protectedUserPages, ...protectedAdminPages]
-        : protectedUserPages,
+        : protectedUserPages
+      ).sort((a, b) => pages.indexOf(a) - pages.indexOf(b)),
     [user]
   );
 
