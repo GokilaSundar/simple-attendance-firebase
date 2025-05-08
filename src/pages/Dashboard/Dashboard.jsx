@@ -12,13 +12,14 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { onValue, ref, set } from "firebase/database";
+import { get, onValue, ref, set } from "firebase/database";
 import humanizeDuration from "humanize-duration";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { LoadingOverlay, useAuth, useConfig } from "../../components/index.js";
 import { database } from "../../Firebase.js";
 import { fetchHoliday } from "../../Utils.js";
+import { useNavigate } from "react-router-dom";
 
 const ClockInOutButton = styled(Button)(() => ({
   display: "flex",
@@ -35,6 +36,8 @@ const ClockInOutButton = styled(Button)(() => ({
 }));
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
+
   const { user } = useAuth();
   const config = useConfig();
 
@@ -61,6 +64,7 @@ export const Dashboard = () => {
   const [clockingOut, setClockingOut] = useState(false);
 
   const [holiday, setHoliday] = useState(null);
+  const [todayTasks, setTodayTasks] = useState([]);
 
   const statusText = useMemo(() => {
     if (clockData.clockIn && !clockData.clockOut) {
@@ -149,6 +153,27 @@ export const Dashboard = () => {
     fetchHoliday(config.currentDate).then(setHoliday);
   }, [config.currentDate]);
 
+  useEffect(() => {
+    const fetchTasks = async () => {
+      setLoading(true);
+      try {
+        const snapshot = await get(
+          ref(database, `/tasks/${user.uid}/${config.currentDate}`)
+        );
+
+        if (snapshot.exists()) {
+          setTodayTasks(Object.values(snapshot.val()));
+        }
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, [config.currentDate, user.uid]);
+
   return (
     <Box
       sx={{
@@ -227,6 +252,88 @@ export const Dashboard = () => {
           {statusText}
         </Typography>
       )}
+
+      {todayTasks.length > 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            width: "100%",
+            maxWidth: 400,
+            mt: 5,
+          }}
+        >
+          <Typography variant="h5" textAlign="center">
+            Today&apos;s Tasks
+          </Typography>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              maxHeight: 400,
+              overflowY: "auto",
+            }}
+          >
+            {todayTasks.map((task) => (
+              <Box
+                key={task.id}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  padding: 2,
+                  border: "1px solid #ccc",
+                }}
+              >
+                <Box sx={{ flex: "1 1 1px", overflow: "hidden" }}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      maxWidth: "100%",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {task.description}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Status: {task.status}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Hours: {task.hours} hours
+                  </Typography>
+                </Box>
+              </Box>
+            ))}
+          </Box>
+
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              alignSelf: "center",
+            }}
+            onClick={() => {
+              navigate("/my-tasks");
+            }}
+          >
+            Manage Tasks
+          </Button>
+        </Box>
+      )}
+
       {loading && <LoadingOverlay />}
     </Box>
   );
