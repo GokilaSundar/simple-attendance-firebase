@@ -176,9 +176,11 @@ export const AllTasks = () => {
           setTasksMap(tasksArray);
         } else {
           console.log("No data available");
+          setTasksMap([]);
         }
       } catch (error) {
         console.error("Error fetching tasks:", error);
+        setTasksMap([]);
       }
 
       setLoadingTasks(false);
