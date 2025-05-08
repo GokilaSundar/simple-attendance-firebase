@@ -107,7 +107,7 @@ export const ImportPreviousTasks = ({ minDate, currentDate, onSubmit }) => {
 
         if (snapshot.exists()) {
           setTasks(
-            Object.values(snapshot.val()).map((task) => ({
+            Object.values(snapshot.val()).filter(task => task.status === "Pending" || task.status === "In Progress").map((task) => ({
               ...task,
               oldStatus: task.status,
               oldHours: task.hours,
