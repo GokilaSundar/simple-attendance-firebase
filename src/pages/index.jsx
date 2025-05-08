@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import { Unauthorized } from "./Unauthorized/Unauthorized";
 import { Holidays } from "./Holidays/Holidays";
 import { MyTasks } from "./MyTasks/MyTasks";
+import { AllTasks } from "./AllTasks/AllTasks";
 
 const pages = [
   Login,
@@ -16,6 +17,7 @@ const pages = [
   MyAttendance,
   MyTasks,
   AllAttendance,
+  AllTasks,
   Holidays,
 ];
 
